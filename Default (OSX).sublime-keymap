@@ -1,0 +1,12 @@
+[
+    {
+        "keys": ["ctrl+j"],
+        "__doc__": "Run JSLint",
+        "command": "jslint"
+    },
+    {
+        "keys": ["shift+ctrl+j"],
+        "__doc__": "Hide JSLint Viewer",
+        "command": "hide_jslint_result"
+    }
+]

@@ -1,0 +1,18 @@
+{
+    // Path to the jshint command.
+    // Leave blank to use installed command.
+    "jshint_bin": "",
+
+    // Path to jshint config file.  
+    // Leave blank to use installed command.
+    "jshint_config": "",
+
+    // Ignore errors, regex.
+    "ignore_errors":
+    [
+        // "Expected an identifier and instead saw 'undefined' \(a reserved word\)"
+    ],
+
+    // debug flag.
+    "debug": true
+}

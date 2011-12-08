@@ -1,0 +1,28 @@
+[
+    {
+        "caption": "Bolt: Run JSLint",
+        "command": "jslint"
+    },
+    {
+        "caption": "Bolt: Show JSLint Result",
+        "command": "show_jslint_result"
+    },
+    {
+        "caption": "Bolt: Hide JSLint Result",
+        "command": "hide_jslint_result"
+    },
+    {
+        "caption": "Preferences: Bolt Settings – Default",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/sublime-bolt/sublime-bolt.sublime-settings"
+        }
+    },
+    {
+        "caption": "Preferences: Bolt Settings – User",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/User/sublime-bolt.sublime-settings"
+        }
+    }
+]

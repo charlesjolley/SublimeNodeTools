@@ -1,0 +1,66 @@
+[
+{
+  "id": "tools",
+  "children":
+  [
+  {
+    "caption": "Bolt",
+    "id": "bolt",
+    "children":
+    [
+    {
+      "caption": "Run JSLint",
+      "command": "jslint"
+      },
+      {
+        "caption": "Show JSLint Result",
+        "command": "show_jslint_result"
+      },
+      {
+        "caption": "Hide JSLint Result",
+        "command": "hide_jslint_result"
+      },
+      {
+        "caption": "Toggle Autolint",
+        "command": "toggle_js_autolint"
+      }
+      ]
+    }
+    ]
+    },
+    {
+      "id": "preferences",
+      "children":
+      [
+      {
+        "caption": "Package Settings",
+        "id": "package-settings",
+        "children":
+        [
+        {
+          "caption": "Bolt",
+          "children":
+          [
+          {
+            "caption": "Settings – Default",
+            "command": "open_file",
+            "args":
+            {
+              "file": "${packages}/sublime-bolt/sublime-bolt.sublime-settings"
+            }
+            },
+            {
+              "caption": "Settings – User",
+              "command": "open_file",
+              "args":
+              {
+                "file": "${packages}/User/sublime-bolt.sublime-settings"
+              }
+            }
+            ]
+          }
+          ]
+        }
+        ]
+      }
+      ]

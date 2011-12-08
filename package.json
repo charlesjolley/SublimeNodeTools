@@ -1,0 +1,10 @@
+{
+  "name": "sublime-bolt",
+  "description": "Bolt tools for Sublime",
+  "version": "0.0.1",
+  "dependencies": {
+    "jshint": "latest",
+    "jasmine-node": "latest",
+    "coffeescript": "latest"
+  } 
+}

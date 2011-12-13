@@ -1,10 +1,12 @@
 {
-  "name": "sublime-bolt",
-  "description": "Bolt tools for Sublime",
+  "name": "SublimeNodeTools",
+  "description": "Node tools for Sublime",
   "version": "0.0.1",
   "dependencies": {
     "jshint": "latest",
     "jasmine-node": "latest",
-    "coffeescript": "latest"
+    "coffee-script": "latest",
+    "argsparser": ">=0.0.3",
+    "minimatch": ">=0.0.4"
   } 
 }

@@ -1,28 +1,32 @@
 [
     {
-        "caption": "Bolt: Run JSLint",
+        "caption": "Node Tools: Run JSLint",
         "command": "jslint"
     },
     {
-        "caption": "Bolt: Show JSLint Result",
-        "command": "show_jslint_result"
+        "caption": "Node Tools: Run Test",
+        "command": "run_jstest"
     },
     {
-        "caption": "Bolt: Hide JSLint Result",
-        "command": "hide_jslint_result"
+        "caption": "Node Tools: Show Results",
+        "command": "show_result"
     },
     {
-        "caption": "Preferences: Bolt Settings – Default",
+        "caption": "Node Tools: Hide Result",
+        "command": "hide_result"
+    },
+    {
+        "caption": "Preferences: Node Tools Settings – Default",
         "command": "open_file", "args":
         {
-            "file": "${packages}/sublime-bolt/sublime-bolt.sublime-settings"
+            "file": "${packages}/SublimeNodeTools/NodeTools.sublime-settings"
         }
     },
     {
-        "caption": "Preferences: Bolt Settings – User",
+        "caption": "Preferences: Node Tools Settings – User",
         "command": "open_file", "args":
         {
-            "file": "${packages}/User/sublime-bolt.sublime-settings"
+            "file": "${packages}/User/NodeTools.sublime-settings"
         }
     }
 ]

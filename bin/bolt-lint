@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+
+var fs          = require('fs'),
+    path        = require('path'),
+    argsparser  = require('argsparser'),
+    coffee      = require('coffee-script'),
+    jshint      = require('jshint/packages/jshint/jshint');
+
+
+var _reporter = require('jshint/lib/reporters/default').reporter;
+
+//...............................................
+// Support Methods
+// 
+
+function _print(results) {
+  function exit() {
+    process.exit(results.length > 0 ? 1 : 0);
+  }
+
+  // avoid stdout cutoff in node 0.4.x, also supports 0.5.x
+  // see https://github.com/joyent/node/issues/1669
+  try {
+      if (!process.stdout.flush()) {
+          process.stdout.once("drain", exit);
+      } else {
+          exit();
+      }
+  } catch (e) {
+      exit();
+  }
+}
+
+// --coffee = process input file as CoffeeScript
+// --config = default path to config file
+function processOptions(args) {
+  var options = argsparser.parse(args);
+  var ret     = {};
+  var targets = options.node;
+  ret.coffee = !!options['--coffee'];
+  ret.reporter = null;
+  ret.file     = options['--file']; // capture filename
+  
+  return ret;
+}
+
+function readStdin(done) {
+  var buf = [];
+  process.stdin.setEncoding('utf8');
+  process.stdin.resume();
+  
+  process.stdin.on('data', function(chunk) {
+    buf.push(chunk);
+  });
+
+  process.stdin.on('end', function() {
+    buf = buf.join('');
+    done(buf);
+  });
+}
+
+/**
+ * Performs the actual lint.  Expects a hash of options including:
+ * 
+ *   data:   the actual data to lint
+ *   coffee: true if CoffeeScript
+ *   config: config hash
+ *   reporter: reporter object or null if no custom reporter
+ *  
+ * @param  {[type]} options [description]
+ * @return {[type]}
+ */
+function _lint(options, results, details) {
+  var buffer = options.data;
+
+  // Remove potential Unicode Byte Order Mark.
+  buffer = buffer.replace(/^\uFEFF/, '');
+
+  // TODO: eval CoffeeSCript if needed.
+  if (options.coffee) {
+    try {
+      coffee.compile(buffer);
+    } catch(e) {
+      results.push({ file: options.file, error: {
+        line:   (e.message.match(/line (\d+):/) || [])[1],
+        character:    0,
+        reason: e.message,
+        evidence: ''
+      } });
+    }
+
+  } else {
+    if (!jshint.JSHINT(buffer, options.config)) {
+      jshint.JSHINT.errors.forEach(function (error) {
+        if (error) {
+          results.push({file: options.file, error: error});
+        }
+      });
+    }
+
+    var lintdata = jshint.JSHINT.data();
+
+    if (lintdata) {
+      lintdata.file = options.file;
+      details.push(lintdata);
+    }
+  }
+}
+
+//...............................................
+// Main Entry Point
+// 
+
+function main(argv) {
+  var options = processOptions(argv);
+  readStdin(function(data) {
+    options.data = data;
+
+    var results = [], details = [];
+    _lint(options, results, details);
+    _reporter(results, details);
+    _print(results);
+  });
+}
+
+main(process.argv);

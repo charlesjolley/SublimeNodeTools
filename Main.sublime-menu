@@ -4,8 +4,8 @@
   "children":
   [
   {
-    "caption": "Bolt",
-    "id": "bolt",
+    "caption": "Node Tools",
+    "id": "node_tools",
     "children":
     [
     {
@@ -13,16 +13,30 @@
       "command": "jslint"
       },
       {
-        "caption": "Show JSLint Result",
-        "command": "show_jslint_result"
-      },
-      {
-        "caption": "Hide JSLint Result",
-        "command": "hide_jslint_result"
-      },
-      {
         "caption": "Toggle Autolint",
         "command": "toggle_js_autolint"
+      },
+      {
+        "caption": "---"
+      },
+      {
+      "caption": "Run Unit Test",
+      "command": "run_js_test"
+      },
+      {
+        "caption": "Toggle Auto Test",
+        "command": "toggle_js_autotest"
+      },
+      {
+        "caption": "---"
+      },
+      {
+        "caption": "Show Result Pane",
+        "command": "show_result"
+      },
+      {
+        "caption": "Hide Result Pane",
+        "command": "hide_result"
       }
       ]
     }
@@ -38,7 +52,7 @@
         "children":
         [
         {
-          "caption": "Bolt",
+          "caption": "Node Tool",
           "children":
           [
           {
@@ -46,7 +60,7 @@
             "command": "open_file",
             "args":
             {
-              "file": "${packages}/sublime-bolt/sublime-bolt.sublime-settings"
+              "file": "${packages}/SublimeNodeTools/NodeTools.sublime-settings"
             }
             },
             {
@@ -54,7 +68,7 @@
               "command": "open_file",
               "args":
               {
-                "file": "${packages}/User/sublime-bolt.sublime-settings"
+                "file": "${packages}/User/NodeTools.sublime-settings"
               }
             }
             ]

@@ -6,11 +6,11 @@ import time
 import sublime
 
 class AsyncProcess(object):
-  def __init__(self, cmd, listener):
+  def __init__(self, cmd, listener, stdin=None):
     self.cmd = cmd
     self.listener = listener
     #print "DEBUG_EXEC: " + str(self.cmd)
-    self.proc = subprocess.Popen([self.cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    self.proc = subprocess.Popen([self.cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
     if self.proc.stdout:
       thread.start_new_thread(self.read_stdout, ())
@@ -18,6 +18,10 @@ class AsyncProcess(object):
     if self.proc.stderr:
       thread.start_new_thread(self.read_stderr, ())
 
+    if stdin:
+      os.write(self.proc.stdin.fileno(), stdin)
+      self.proc.stdin.close()
+      
     thread.start_new_thread(self.poll, ())
 
   def poll(self):

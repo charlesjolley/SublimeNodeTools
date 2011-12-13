@@ -4,25 +4,18 @@ import sublime
 import sublime_plugin
 from statusprocess import *
 from asyncprocess import *
+from output_panel import *
 
-RESULT_VIEW_NAME = 'jslint_result_view'
-SETTINGS_FILE = "sublime-bolt.sublime-settings"
 PROMPT = "jshint:\n"
+SUPPORTED_SELECTORS = ('source.js', 'source.json', 'source.coffee')
 
 ###############################################
 # Support Functions
 #
 
-def show_tests_panel(window):
-  window.run_command("show_panel", {"panel": "output."+RESULT_VIEW_NAME})
-
-def hide_tests_panel(window):
-  window.run_command("hide_panel", {"panel": "output."+RESULT_VIEW_NAME})
-
-
 def is_supported_view(view):
-  return not view.is_scratch() and (view.score_selector(0, 'source.js') or 
-    view.score_selector(0, 'source.json'))
+  return (not view.is_scratch() and 
+    any(map(lambda x: view.score_selector(0, x), SUPPORTED_SELECTORS)))
 
 def is_autolinting(view):
   return is_supported_view and (view.settings().get("js_autolint", True))
@@ -31,26 +24,13 @@ def is_autolinting(view):
 # Commands
 #
 
-class HideJslintResultCommand(sublime_plugin.WindowCommand):
-  """show jslint result"""
-  def run(self):
-    hide_tests_panel(self.window)
-
-class ShowJslintResultCommand(sublime_plugin.WindowCommand):
-  """show jslint result"""
-  def run(self):
-    show_tests_panel(self.window)
-
 class ToggleJsAutolintCommand(sublime_plugin.WindowCommand):
   """Toggle autolinting on supported files"""
   def is_enabled(self):
     return is_supported_view(self.window.active_view())
 
   def run(self):
-    current_setting = is_autolinting(self.window.active_view())
-    print "Setting to: " + str(current_setting)
-    self.window.active_view().settings().set("js_autolint", not current_setting)
-
+    toggle_setting(self.window.active_view().settings(), 'js_autolint', True)
 
 class JslintCommand(sublime_plugin.WindowCommand):
 
@@ -60,7 +40,8 @@ class JslintCommand(sublime_plugin.WindowCommand):
   def run(self):
     s = sublime.load_settings(SETTINGS_FILE)
 
-    file_path = self.window.active_view().file_name()
+    view      = self.window.active_view()
+    file_path = view.file_name()
     file_name = os.path.basename(file_path)
    
     self.debug = s.get('debug', False)
@@ -68,33 +49,40 @@ class JslintCommand(sublime_plugin.WindowCommand):
     self.file_path = file_path
     self.file_name = file_name
     self.is_running = True
-    self.tests_panel_showed = False
+    self.output_panel_showed = False
     self.ignored_error_count = 0
     self.ignore_errors = s.get('ignore_errors', [])
 
-    self.init_tests_panel()
+    self.init_output_panel()
 
     if len(s.get('jshint_config', '')) > 0:
       config_path = s.get('jshint_config')
     else:
-      config_path = sublime.packages_path()+'/sublime-bolt/jshint-config.json'
+      config_path = sublime.packages_path()+'/SublimeNodeTools/jshint-config.json'
  
     if len(s.get('jshint_bin', '')) > 0:
       jshint_bin = s.get('jshint_bin')
     else:
-      jshint_bin = sublime.packages_path() + '/sublime-bolt/node_modules/jshint/bin/hint'
+      jshint_bin = sublime.packages_path() + '/SublimeNodeTools/bin/bolt-lint'
 
-    cmd = 'source ~/.profile; "'+jshint_bin + '" "' + file_path + '" --config "' + config_path +'" ' + s.get('jshint_options', '')
+    # TODO: lookup all CoffeeScript and JavaScript ranges, not just the first
+    if view.score_selector(0, 'source.coffee'):
+      coffee_flag = ' --coffee '
+    else:
+      coffee_flag = ''
+
+    script = view.substr(sublime.Region(0, view.size()))
+    cmd = 'source ~/.profile; "'+jshint_bin + '" --config "' + config_path +'"  --file "' + file_name + '" ' + coffee_flag + s.get('jshint_options', '')
 
     if self.debug:
       print "DEBUG: " + str(cmd)
 
-    AsyncProcess(cmd, self)
+    AsyncProcess(cmd, self, script)
     StatusProcess('Starting JSHint for file ' + file_name, self)
 
     JsLintEventListener.disabled = True
 
-  def init_tests_panel(self):
+  def init_output_panel(self):
     if not hasattr(self, 'output_view'):
       self.output_view = self.window.get_output_panel(RESULT_VIEW_NAME)
       self.output_view.set_name(RESULT_VIEW_NAME)
@@ -143,7 +131,7 @@ class JslintCommand(sublime_plugin.WindowCommand):
           text += line + '\n'
 
 
-    show_tests_panel(self.window)
+    show_output_panel(self.window)
     selection_was_at_end = (len(self.output_view.sel()) == 1 and self.output_view.sel()[0] == sublime.Region(self.output_view.size()))
     self.output_view.set_read_only(False)
     edit = self.output_view.begin_edit()
@@ -167,7 +155,7 @@ class JslintCommand(sublime_plugin.WindowCommand):
   def proc_terminated(self, proc):
     if proc.returncode == 0:
       sublime.status_message("jshint: " + self.file_name + ' has no errors')
-      hide_tests_panel(self.window)
+      hide_output_panel(self.window)
 
     else:
       msg = ''

@@ -5,6 +5,11 @@
         "command": "jslint"
     },
     {
+        "keys": ["alt+ctrl+j"],
+        "__doc__": "Run Unit Test",
+        "command": "run_js_test"
+    },
+    {
         "keys": ["shift+ctrl+j"],
         "__doc__": "Hide JSLint Viewer",
         "command": "hide_jslint_result"

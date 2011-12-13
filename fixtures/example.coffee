@@ -1,0 +1,3 @@
+
+Example.extend ->
+  foo: 'Bar'

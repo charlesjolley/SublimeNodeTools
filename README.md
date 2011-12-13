@@ -15,3 +15,10 @@ This package provides some useful tools to writing Node-powered JavaScript apps 
 
 Everything should work automatically.  You can find a menu for most commands under Tools/Node
 
+== Todo
+
+    * Automatically detect when npm packages are not yet setup for 
+        package and run `npm install` so the plugin Just Works.
+    * Work with more testing frameworks than just Jasmine.
+    * Make configuring jshint work directly through configuration file
+    
